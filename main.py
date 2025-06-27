@@ -7,10 +7,11 @@ from dateparser import parse
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 import openai
+import os
 
 # === CONFIGURATION ===
-TELEGRAM_TOKEN = "8162515380:AAFWl-vVNYscz3gagi8zT2_xXz8Y6dTPJnI"
-OPENAI_API_KEY = "sk-proj-O3vpuQAYV3iGZlzT6KS7T3BlbkFJuloQKCXJKRlqU0hKdoND"
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 DB_PATH = "tasks.db"
 
@@ -33,7 +34,7 @@ def init_db():
 
 # === GPT PARSER ===
 def parse_task(text):
-    prompt = f"Извлеки из этой строки задание и время напоминания: '{text}'. Ответь в формате: TASK: ...\nTIME: ..."
+    prompt = f"Извлеки из этой строки задание и время напоминания: '{text}'. Ответь в формате: TASK: ...\\nTIME: ..."
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}]
@@ -82,7 +83,6 @@ async def reminder_loop(app):
 # === HANDLERS ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Привет! Напиши, что мне напомнить и когда.")
-Пример: 'Напомни завтра в 9 утра купить кофе'")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
