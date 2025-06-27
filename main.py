@@ -81,7 +81,7 @@ async def reminder_loop(app):
 
 # === HANDLERS ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👋 Привет! Напиши, что мне напомнить и когда."
+    await update.message.reply_text("👋 Привет! Напиши, что мне напомнить и когда.")
 Пример: 'Напомни завтра в 9 утра купить кофе'")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
