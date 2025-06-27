@@ -1,6 +1,5 @@
 import logging
 import sqlite3
-import time
 from datetime import datetime
 from dateparser import parse
 from telegram import Update
