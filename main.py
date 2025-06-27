@@ -106,11 +106,14 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    thread = threading.Thread(target=lambda: app.run_polling(), daemon=True)
-    thread.start()
-
     import asyncio
-    asyncio.run(reminder_loop(app))
+
+    async def run():
+        loop = asyncio.get_running_loop()
+        loop.create_task(reminder_loop(app))
+        await app.run_polling()
+
+    asyncio.run(run())
 
 if __name__ == "__main__":
     main()
