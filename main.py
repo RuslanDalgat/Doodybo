@@ -1,13 +1,13 @@
 import logging
 import sqlite3
 import time
-import threading
 from datetime import datetime
 from dateparser import parse
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 import openai
 import os
+import asyncio
 
 # === CONFIGURATION ===
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -78,7 +78,7 @@ async def reminder_loop(app):
                 await app.bot.send_message(chat_id=user_id, text=f"🔔 Напоминание: {task}")
             except Exception as e:
                 logger.error(f"Ошибка отправки напоминания: {e}")
-        time.sleep(30)
+        await asyncio.sleep(30)
 
 # === HANDLERS ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -106,11 +106,8 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    import asyncio
-
     async def run():
-        loop = asyncio.get_running_loop()
-        loop.create_task(reminder_loop(app))
+        asyncio.create_task(reminder_loop(app))
         await app.run_polling()
 
     asyncio.run(run())
